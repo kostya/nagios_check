@@ -38,14 +38,22 @@ class Nagios::Tresh < Nagios::Check
   # params :s, :c
 
   # def some_m
-  #   s && s.to_i
+  #   if ss = s
+  #     ss.to_i
+  #   else
+  #     0
+  #   end
   # end
 
   # def criti
-  #   c && c.to_i
+  #   if cc = c
+  #     cc.to_i
+  #   else
+  #     0
+  #   end
   # end
 
   # def execute
-  #   tresholds(:some_m, 5, criti) { |x| "msg #{x}" }
+  #   tresholds(->() { some_m }, 5, criti) { |x| "msg #{x}" }
   # end
 end

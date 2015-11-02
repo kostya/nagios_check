@@ -22,7 +22,7 @@ class Nagios::Check
     self.name.underscore.split("::").last
   end
 
-  macro def self.subclasses : Array(Nagios::Check.class)
+  macro def self.subclasses : Array(self.class)
     {{ Nagios::Check.subclasses }}
   end
 
@@ -94,8 +94,8 @@ class Nagios::Check
   end
 
   def tresholds(method : ->, w, e, &block)
-    res = method.call
-    msg = block[res] || res.inspect
+    res = method.call()
+    msg = "#{res}" #block.call(res) || res.inspect
 
     if e && res >= e
       crit msg
@@ -106,7 +106,7 @@ class Nagios::Check
     end
   end
 
-  def tresholds(method, w, e)
-    thresholds(method, w, e) { nil }
-  end
+  # def tresholds(method, w, e)
+  #   thresholds(method, w, e) { nil }
+  # end
 end
