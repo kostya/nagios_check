@@ -1,32 +1,13 @@
-# class Nagios::Bla < Nagios::Check
-#   def execute
-#     x = 10
-#     msg = "x #{x}"
-#     if x < 1
-#       crit msg
-#     elsif x < 5
-#       warn msg
-#     else
-#       ok msg
-#     end
-#   end
-# end
-
-# Nagios::Bla.check => {Nagios::OK, "x 10"}
-# Nagios::Check.run("bla") => {Nagios::OK, "x 10"}
-
 class Nagios::Check
-  @@checks = {} of String => Nagios::Check
-
   getter check_name, started_at
 
-  # macro inherited
-  #   @@checks[self.class.check_name] = self.class
-  # end
-
-  # def self.run(method_name, params = {} of String => String)
-
-  # end
+  def self.run(method_name, params = {} of String => String)
+    if kl = subclasses.find { |s| s.check_name == method_name }
+      kl.check(params)
+    else
+      {Nagios::OTHER, "Not found class for '#{method_name}'"}
+    end
+  end
 
   def initialize(@params = {} of String => String)
     @started_at = Time.now
@@ -39,6 +20,10 @@ class Nagios::Check
 
   def self.check_name
     self.name.underscore.split("::").last
+  end
+
+  macro def self.subclasses : Array(Nagios::Check.class)
+    {{ Nagios::Check.subclasses }}
   end
 
   def result
@@ -66,9 +51,7 @@ class Nagios::Check
     begin
       execute
     rescue ex
-      if msg = ex.message
-        other "Exception: " + msg
-      end
+      other "Exception: " + ex.message.to_s
     end
 
     result
@@ -110,9 +93,10 @@ class Nagios::Check
     {% end %}
   end
 
-  def tresholds(method, w, e, &block)
-    res = send(method)
-    msg = block[res]
+  def tresholds(method : ->, w, e, &block)
+    res = method.call
+    msg = block[res] || res.inspect
+
     if e && res >= e
       crit msg
     elsif w && res >= w
@@ -120,5 +104,9 @@ class Nagios::Check
     else
       ok msg
     end
+  end
+
+  def tresholds(method, w, e)
+    thresholds(method, w, e) { nil }
   end
 end

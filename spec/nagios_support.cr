@@ -35,17 +35,17 @@ class Nagios::Prefix < Nagios::Check
 end
 
 class Nagios::Tresh < Nagios::Check
-  params :s, :c
+  # params :s, :c
 
-  def some_m
-    s && s.to_i
-  end
+  # def some_m
+  #   s && s.to_i
+  # end
 
-  def criti
-    c && c.to_i
-  end
+  # def criti
+  #   c && c.to_i
+  # end
 
-  def execute
-    tresholds(:some_m, 5, criti) { |x| "msg #{x}" }
-  end
+  # def execute
+  #   tresholds(:some_m, 5, criti) { |x| "msg #{x}" }
+  # end
 end

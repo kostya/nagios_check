@@ -2,20 +2,11 @@ require "./spec_helper"
 require "./nagios_support"
 
 describe "Nagios::Bla" do
-  # it "ok run throught lookup" do
-  #   Nagios::Check.run("bla").should eq({Nagios::OK, "a5"})
-  # end
-
-  # it "when undefined check_name" do
-  #   Nagios::Check.run("asdf").should eq({Nagios::OTHER, "a5"})
-  #   Nagios::Check.run("").should eq({Nagios::OTHER, "a5"})
-  # end
-
-  it "ok run" do
-    Nagios::Bla.check.should eq({Nagios::OK, "a5"})
-  end
-
   describe "check" do
+    it "ok run" do
+      Nagios::Bla.check.should eq({Nagios::OK, "a5"})
+    end
+
     it "crit" do
       Nagios::Bla.check({"s" => "crit"}).should eq({Nagios::CRIT, "a1"})
     end
@@ -38,6 +29,18 @@ describe "Nagios::Bla" do
 
     it "crit_warn" do
       Nagios::Bla.check({"s" => "crit_warn"}).should eq({Nagios::CRIT, "a1; a2"})
+    end
+  end
+
+  describe "runner" do
+    it "ok run throught lookup" do
+      Nagios::Check.run("bla").should eq({Nagios::OK, "a5"})
+      Nagios::Check.run("bla", {"s" => "crit"}).should eq({Nagios::CRIT, "a1"})
+    end
+
+    it "when undefined check_name" do
+      Nagios::Check.run("asdf").should eq({Nagios::OTHER, "Not found class for 'asdf'"})
+      Nagios::Check.run("").should eq({Nagios::OTHER, "Not found class for ''"})
     end
   end
 
