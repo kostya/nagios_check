@@ -1,0 +1,7 @@
+name: nagios_check
+version: 0.1.0
+
+authors:
+  - Konstantin Makarchev <kostya27@gmail.com>
+
+license: MIT
