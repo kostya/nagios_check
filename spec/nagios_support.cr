@@ -1,5 +1,27 @@
 require "./spec_helper"
 
+
+# x = SOME_METHOD
+# msg = SOME_MESSAGE_FORMATTER(x) || x.to_s
+# if x > CRIT_LIMIT
+#   crit msg
+# elsif x > WARN_LIMIT
+#   warn msg
+# else
+#   ok msg
+# end
+
+# class Nagios::Hah < Nagios::Check
+#   def balance(param)
+#   end
+
+#   def execute
+#     10.times do |param|
+#       tresholds(some_method(param), 90, 60) { |val| "balance:#{val}" }
+#     end
+#   end
+# end
+
 class Nagios::Bla < Nagios::Check
   params :s
 

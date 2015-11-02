@@ -23,7 +23,7 @@ class Nagios::Check
   end
 
   macro def self.subclasses : Array(self.class)
-    {{ Nagios::Check.subclasses }}
+    {{ @type.subclasses }}
   end
 
   def result
