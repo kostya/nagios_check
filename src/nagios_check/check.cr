@@ -66,7 +66,9 @@ class Nagios::Check
     begin
       execute
     rescue ex
-      other "Exception: " + ex.message
+      if msg = ex.message
+        other "Exception: " + msg
+      end
     end
 
     result
