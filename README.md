@@ -52,3 +52,18 @@ class Nagios::Blah < Nagios::Check
   end
 end
 ```
+
+## FastCheck
+
+
+```crystal
+class Nagios::Blah < Nagios::Check
+  def some_measure(arg)
+    rand + arg
+  end
+
+  def execute
+    check "some_measure", 0, some_measure(0), ok: {0, 0.5}, warn: {0.5, 0.7}, crit: {0.7, 1.0}
+  end
+end
+```

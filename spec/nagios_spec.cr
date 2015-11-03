@@ -83,6 +83,20 @@ describe "Nagios::Bla" do
     end
   end
 
+  describe "FastCheck" do
+    it "check1" do
+      Nagios::FastCheck1.check.should eq({Nagios::CRIT, "red(9):0.9; red(10):1 \\ red(7):0.7; red(8):0.8"})
+      Nagios::FastCheck1.check({"to" => "6"}).should eq({Nagios::OK, "red(0):0; red(1):0.1; red(2):0.2; red(3):0.3; red(4):0.4; red(5):0.5; red(6):0.6"})
+      Nagios::FastCheck1.check({"to" => "7"}).should eq({Nagios::WARN, "red(7):0.7"})
+      Nagios::FastCheck1.check({"dir" => "right"}).should eq({Nagios::CRIT, "red(0):0; red(1):0.1; red(2):0.2; red(3):0.3 \\ red(4):0.4; red(5):0.5; red(6):0.6; red(7):0.7; red(8):0.8; red(9):0.9"})
+    end
+
+    it "check3" do
+      Nagios::FastCheck3.check.should eq({Nagios::CRIT, "red:false"})
+      Nagios::FastCheck3.check({"r" => "0.2"}).should eq({Nagios::OK, "red:true"})
+    end
+  end
+
   it "check_name" do
     Nagios::Prefix.check_name.should eq("prefix")
     Nagios::Prefix.new.check_name.should eq("prefix")

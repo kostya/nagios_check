@@ -80,3 +80,33 @@ class Nagios::GenCheck3 < Nagios::Check
     check_red ok: true, crit: false
   end
 end
+
+
+class Nagios::FastCheck1 < Nagios::Check
+  params :dir, :to
+
+  def red(x = 10)
+    x / 10.0
+  end
+
+  def execute
+    upto = (to || 10).to_i
+    if dir == "right"
+      (0..upto).each { |param| check("red", param, red(param), ok: {0.9, 1.0}, warn: {0.3, 0.9}, crit: {0.0, 0.3}) }
+    else
+      (0..upto).each { |param| check("red", param, red(param), ok: {0.0, 0.7}, warn: {0.7, 0.9}, crit: {0.9, 1.0}) }
+    end
+  end
+end
+
+class Nagios::FastCheck3 < Nagios::Check
+  params :r
+
+  def red
+    r ? true : false
+  end
+
+  def execute
+    check "red", nil, red, ok: true, crit: false
+  end
+end

@@ -101,49 +101,53 @@ class Nagios::Check
     {% for method in methods %}
       def check_{{ method.id }}(arg = nil, ok = nil, warn = nil, crit = nil)
         res = {{ method.id }}(arg)
-        msg = "{{ method.id }}" + (arg ? "(#{arg})" : "") + ":#{res}"
-
-        ok msg
-
-        if crit.is_a?(Tuple)
-          left, right = crit
-          if res >= left && res <= right
-            crit msg
-            return
-          end
-        elsif !crit.nil?
-          if res == crit
-            crit msg
-            return
-          end
-        end
-
-        if warn.is_a?(Tuple)
-          left, right = warn
-          if res >= left && res <= right
-            warn msg
-            return
-          end
-        elsif !warn.nil?
-          if res == warn
-            warn msg
-            return
-          end
-        end
-
-        if ok.is_a?(Tuple)
-          left, right = ok
-          if res < left || res > right
-            other msg
-            return
-          end
-        elsif !ok.nil?
-          if res != ok
-            other msg
-            return
-          end
-        end
+        check("{{ method.id }}", arg, res, ok, warn, crit)
       end
     {% end %}
+  end
+
+  def check(name : String, arg, res, ok = nil, warn = nil, crit = nil)
+    msg = name + (arg ? "(#{arg})" : "") + ":#{res}"
+
+    ok msg
+
+    if crit.is_a?(Tuple)
+      left, right = crit
+      if res >= left && res <= right
+        crit msg
+        return
+      end
+    elsif !crit.nil?
+      if res == crit
+        crit msg
+        return
+      end
+    end
+
+    if warn.is_a?(Tuple)
+      left, right = warn
+      if res >= left && res <= right
+        warn msg
+        return
+      end
+    elsif !warn.nil?
+      if res == warn
+        warn msg
+        return
+      end
+    end
+
+    if ok.is_a?(Tuple)
+      left, right = ok
+      if res < left || res > right
+        other msg
+        return
+      end
+    elsif !ok.nil?
+      if res != ok
+        other msg
+        return
+      end
+    end
   end
 end
