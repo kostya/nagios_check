@@ -22,7 +22,7 @@ require "nagios_check"
 
 class Nagios::Blah < Nagios::Check
   def execute
-    x = some_method
+    x = SomeClass.some_method
     if x < 10
       crit "some_method < 10"
     elsif x < 20
