@@ -28,7 +28,7 @@ describe "Nagios::Bla" do
     end
 
     it "crit_warn" do
-      Nagios::Bla.check({"s" => "crit_warn"}).should eq({Nagios::CRIT, "a1; a2"})
+      Nagios::Bla.check({"s" => "crit_warn"}).should eq({Nagios::CRIT, "a1 \\ a2"})
     end
   end
 
@@ -64,10 +64,8 @@ describe "Nagios::Bla" do
 
   describe "GenCheck" do
     it "check1" do
-      k = Nagios::GenCheck1.new
-      k.check
-      p k
-      Nagios::GenCheck1.check.should eq({Nagios::WARN, "msg 15"})
+      Nagios::GenCheck1.check.should eq({Nagios::CRIT, "red(10):1 \\ red(8):0.8; red(9):0.9"})
+      Nagios::GenCheck1.check({"dir" => "right"}).should eq({Nagios::CRIT, "red(1):0.1; red(2):0.2; red(3):0.3 \\ red(4):0.4; red(5):0.5; red(6):0.6; red(7):0.7; red(8):0.8; red(9):0.9 \\ red(0):0"})
     end
   end
 

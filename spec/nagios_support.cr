@@ -35,12 +35,18 @@ class Nagios::Prefix < Nagios::Check
 end
 
 class Nagios::GenCheck1 < Nagios::Check
+  params :dir
+
   def red(x = 10)
     x / 10.0
   end
   gen_check :red
 
   def execute
-    (0..10).each { |param| check_red(param, ok = {0.0, 0.7}, warn = {0.7, 0.9}, crit = {0.9, 1.0}) }
+    if dir == "right"
+      (0..10).each { |param| check_red(param, ok = {0.9, 1.0}, warn = {0.3, 0.9}, crit = {0.0, 0.3}) }
+    else
+      (0..10).each { |param| check_red(param, ok = {0.0, 0.7}, warn = {0.7, 0.9}, crit = {0.9, 1.0}) }
+    end
   end
 end
