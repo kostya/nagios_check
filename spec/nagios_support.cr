@@ -40,11 +40,11 @@ class Nagios::GenCheck1 < Nagios::Check
   def red(x = 10)
     x / 10.0
   end
+
   gen_check :red
 
   def execute
     upto = (to || 10).to_i
-    
     if dir == "right"
       (0..upto).each { |param| check_red(param, ok: {0.9, 1.0}, warn: {0.3, 0.9}, crit: {0.0, 0.3}) }
     else
@@ -55,9 +55,11 @@ end
 
 class Nagios::GenCheck2 < Nagios::Check
   params :r
+
   def red(x)
     (r || 0.1).to_f
   end
+
   gen_check :red
 
   def execute
@@ -67,9 +69,11 @@ end
 
 class Nagios::GenCheck3 < Nagios::Check
   params :r
+
   def red(x)
     r ? true : false
   end
+
   gen_check :red
 
   def execute

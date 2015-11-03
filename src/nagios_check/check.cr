@@ -115,7 +115,7 @@ class Nagios::Check
           if res == crit
             crit msg
             return
-          end          
+          end
         end
 
         if warn.is_a?(Tuple)
@@ -142,7 +142,7 @@ class Nagios::Check
             other msg
             return
           end
-        end        
+        end
       end
     {% end %}
   end
