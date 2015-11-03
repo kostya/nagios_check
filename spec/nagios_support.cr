@@ -44,9 +44,9 @@ class Nagios::GenCheck1 < Nagios::Check
 
   def execute
     if dir == "right"
-      (0..10).each { |param| check_red(param, ok = {0.9, 1.0}, warn = {0.3, 0.9}, crit = {0.0, 0.3}) }
+      (0..10).each { |param| check_red(param, ok: {0.9, 1.0}, warn: {0.3, 0.9}, crit: {0.0, 0.3}) }
     else
-      (0..10).each { |param| check_red(param, ok = {0.0, 0.7}, warn = {0.7, 0.9}, crit = {0.9, 1.0}) }
+      (0..10).each { |param| check_red(param, ok: {0.0, 0.7}, warn: {0.7, 0.9}, crit: {0.9, 1.0}) }
     end
   end
 end
@@ -59,7 +59,7 @@ class Nagios::GenCheck2 < Nagios::Check
   gen_check :red
 
   def execute
-    check_red nil, ok = 0.1, warn = 0.2, crit = 0.3
+    check_red ok: 0.1, warn: 0.2, crit: 0.3
   end
 end
 
@@ -71,6 +71,6 @@ class Nagios::GenCheck3 < Nagios::Check
   gen_check :red
 
   def execute
-    check_red nil, ok = true, warn = nil, crit = false
+    check_red ok: true, crit: false
   end
 end
