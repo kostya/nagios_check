@@ -107,7 +107,7 @@ class Nagios::Check
 
         if crit.is_a?(Tuple)
           left, right = crit
-          if res > left && res <= right
+          if res >= left && res <= right
             crit msg
             return
           end
@@ -120,7 +120,7 @@ class Nagios::Check
 
         if warn.is_a?(Tuple)
           left, right = warn
-          if res > left && res <= right
+          if res >= left && res <= right
             warn msg
             return
           end

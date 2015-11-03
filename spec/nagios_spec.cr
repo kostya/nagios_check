@@ -64,10 +64,10 @@ describe "Nagios::Bla" do
 
   describe "GenCheck" do
     it "check1" do
-      Nagios::GenCheck1.check.should eq({Nagios::CRIT, "red(10):1 \\ red(8):0.8; red(9):0.9"})
-      Nagios::GenCheck1.check({"to" => "7"}).should eq({Nagios::OK, "red(0):0; red(1):0.1; red(2):0.2; red(3):0.3; red(4):0.4; red(5):0.5; red(6):0.6; red(7):0.7"})
-      Nagios::GenCheck1.check({"to" => "8"}).should eq({Nagios::WARN, "red(8):0.8"})
-      Nagios::GenCheck1.check({"dir" => "right"}).should eq({Nagios::CRIT, "red(1):0.1; red(2):0.2; red(3):0.3 \\ red(4):0.4; red(5):0.5; red(6):0.6; red(7):0.7; red(8):0.8; red(9):0.9 \\ red(0):0"})
+      Nagios::GenCheck1.check.should eq({Nagios::CRIT, "red(9):0.9; red(10):1 \\ red(7):0.7; red(8):0.8"})
+      Nagios::GenCheck1.check({"to" => "6"}).should eq({Nagios::OK, "red(0):0; red(1):0.1; red(2):0.2; red(3):0.3; red(4):0.4; red(5):0.5; red(6):0.6"})
+      Nagios::GenCheck1.check({"to" => "7"}).should eq({Nagios::WARN, "red(7):0.7"})
+      Nagios::GenCheck1.check({"dir" => "right"}).should eq({Nagios::CRIT, "red(0):0; red(1):0.1; red(2):0.2; red(3):0.3 \\ red(4):0.4; red(5):0.5; red(6):0.6; red(7):0.7; red(8):0.8; red(9):0.9"})
     end
 
     it "check2" do
