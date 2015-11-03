@@ -95,6 +95,18 @@ describe "Nagios::Bla" do
       Nagios::FastCheck3.check.should eq({Nagios::CRIT, "red:false"})
       Nagios::FastCheck3.check({"r" => "0.2"}).should eq({Nagios::OK, "red:true"})
     end
+
+    it "check_array" do
+      Nagios::FastCheckArray.check({"r" => "5"}).should eq({Nagios::OK, "red:5"})
+      Nagios::FastCheckArray.check({"r" => "12"}).should eq({Nagios::CRIT, "red:12"})
+      Nagios::FastCheckArray.check({"r" => "13"}).should eq({Nagios::OTHER, "red:13"})
+    end
+
+    it "check_range" do
+      Nagios::FastCheckRange.check({"r" => "5"}).should eq({Nagios::OK, "red:5"})
+      Nagios::FastCheckRange.check({"r" => "16"}).should eq({Nagios::CRIT, "red:16"})
+      Nagios::FastCheckRange.check({"r" => "28"}).should eq({Nagios::OTHER, "red:28"})
+    end
   end
 
   it "check_name" do

@@ -110,35 +110,44 @@ class Nagios::Check
 
     ok msg
 
-    if crit.is_a?(Tuple)
-      left, right = crit
-      if res >= left && res <= right
-        crit msg
-        return
+    {% for chk in %w(crit warn) %}
+      if {{ chk.id }}.is_a?(Tuple)
+        left, right = {{ chk.id }}
+        if res >= left && res <= right
+          {{ chk.id }} msg
+          return
+        end
+      elsif {{ chk.id }}.is_a?(Array)
+        if {{ chk.id }}.includes?(res)
+          {{ chk.id }} msg
+          return
+        end
+      elsif {{ chk.id }}.is_a?(Range)
+        if {{ chk.id }}.includes?(res)
+          {{ chk.id }} msg
+          return
+        end
+      elsif !{{ chk.id }}.nil?
+        if res == {{ chk.id }}
+          {{ chk.id }} msg
+          return
+        end
       end
-    elsif !crit.nil?
-      if res == crit
-        crit msg
-        return
-      end
-    end
-
-    if warn.is_a?(Tuple)
-      left, right = warn
-      if res >= left && res <= right
-        warn msg
-        return
-      end
-    elsif !warn.nil?
-      if res == warn
-        warn msg
-        return
-      end
-    end
+    {% end %}
 
     if ok.is_a?(Tuple)
       left, right = ok
       if res < left || res > right
+        other msg
+        return
+      end
+    elsif ok.is_a?(Array)
+      unless ok.includes?(res)
+        other msg
+        return
+      end
+    elsif ok.is_a?(Range)
+      unless ok.includes?(res)
         other msg
         return
       end

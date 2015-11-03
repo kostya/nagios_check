@@ -109,3 +109,27 @@ class Nagios::FastCheck3 < Nagios::Check
     check "red", red, ok: true, crit: false
   end
 end
+
+class Nagios::FastCheckArray < Nagios::Check
+  params :r
+
+  def red
+    (r || 11).to_i
+  end
+
+  def execute
+    check "red", red, ok: [1, 5, 7], crit: [8, 12, 22]
+  end
+end
+
+class Nagios::FastCheckRange < Nagios::Check
+  params :r
+
+  def red
+    (r || 12).to_i
+  end
+
+  def execute
+    check "red", red, ok: 0..12, crit: 15..22
+  end
+end
