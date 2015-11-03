@@ -50,3 +50,27 @@ class Nagios::GenCheck1 < Nagios::Check
     end
   end
 end
+
+class Nagios::GenCheck2 < Nagios::Check
+  params :r
+  def red(x)
+    (r || 0.1).to_f
+  end
+  gen_check :red
+
+  def execute
+    check_red nil, ok = 0.1, warn = 0.2, crit = 0.3
+  end
+end
+
+class Nagios::GenCheck3 < Nagios::Check
+  params :r
+  def red(x)
+    r ? true : false
+  end
+  gen_check :red
+
+  def execute
+    check_red nil, ok = true, warn = nil, crit = false
+  end
+end

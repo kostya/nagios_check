@@ -67,6 +67,18 @@ describe "Nagios::Bla" do
       Nagios::GenCheck1.check.should eq({Nagios::CRIT, "red(10):1 \\ red(8):0.8; red(9):0.9"})
       Nagios::GenCheck1.check({"dir" => "right"}).should eq({Nagios::CRIT, "red(1):0.1; red(2):0.2; red(3):0.3 \\ red(4):0.4; red(5):0.5; red(6):0.6; red(7):0.7; red(8):0.8; red(9):0.9 \\ red(0):0"})
     end
+
+    it "check2" do
+      Nagios::GenCheck2.check.should eq({Nagios::OK, "red:0.1"})
+      Nagios::GenCheck2.check({"r" => "0.2"}).should eq({Nagios::WARN, "red:0.2"})
+      Nagios::GenCheck2.check({"r" => "0.3"}).should eq({Nagios::CRIT, "red:0.3"})
+      Nagios::GenCheck2.check({"r" => "0.4"}).should eq({Nagios::OTHER, "red:0.4"})
+    end
+
+    it "check3" do
+      Nagios::GenCheck3.check.should eq({Nagios::CRIT, "red:false"})
+      Nagios::GenCheck3.check({"r" => "0.2"}).should eq({Nagios::OK, "red:true"})
+    end
   end
 
   it "check_name" do
