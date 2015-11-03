@@ -101,13 +101,14 @@ class Nagios::Check
     {% for method in methods %}
       def check_{{ method.id }}(arg = nil, ok = nil, warn = nil, crit = nil)
         res = {{ method.id }}(arg)
-        check("{{ method.id }}", arg, res, ok, warn, crit)
+        msg = "{{ method.id }}" + (arg ? "(#{arg})" : "")
+        check(msg, res, ok, warn, crit)
       end
     {% end %}
   end
 
-  def check(name : String, arg, res, ok = nil, warn = nil, crit = nil)
-    msg = name + (arg ? "(#{arg})" : "") + ":#{res}"
+  def check(name : String, res, ok = nil, warn = nil, crit = nil)
+    msg = name + ":#{res}"
 
     ok msg
 
