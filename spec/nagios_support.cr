@@ -81,7 +81,6 @@ class Nagios::GenCheck3 < Nagios::Check
   end
 end
 
-
 class Nagios::FastCheck1 < Nagios::Check
   params :dir, :to
 

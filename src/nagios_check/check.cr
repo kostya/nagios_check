@@ -2,8 +2,8 @@ class Nagios::Check
   getter check_name, started_at
 
   def self.run(method_name, params = {} of String => String)
-    if kl = subclasses.find { |s| s.check_name == method_name }
-      kl.check(params)
+    if klass = subclasses.find { |s| s.check_name == method_name }
+      klass.check(params)
     else
       {Nagios::OTHER, "Not found class for '#{method_name}'"}
     end
@@ -33,18 +33,16 @@ class Nagios::Check
     errors << @other.join("; ") if @other.any?
     errors = message_prefix + errors.join(" \\ ")
 
-    res = if @crit.any?
-            {Nagios::CRIT, errors}
-          elsif @warn.any?
-            {Nagios::WARN, errors}
-          elsif @other.any?
-            {Nagios::OTHER, errors}
-          else
-            @ok = ["OK"] if message_prefix.empty? && @ok.empty?
-            {Nagios::OK, message_prefix + @ok.join("; ")}
-          end
-
-    res
+    if @crit.any?
+      {Nagios::CRIT, errors}
+    elsif @warn.any?
+      {Nagios::WARN, errors}
+    elsif @other.any?
+      {Nagios::OTHER, errors}
+    else
+      @ok = ["OK"] if message_prefix.empty? && @ok.empty?
+      {Nagios::OK, message_prefix + @ok.join("; ")}
+    end
   end
 
   def message_prefix
