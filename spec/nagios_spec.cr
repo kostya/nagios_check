@@ -62,27 +62,17 @@ describe "Nagios::Bla" do
     Nagios::Prefix.check({"s" => "2"}).should eq({Nagios::OK, "some 2"})
   end
 
-  describe "tresholds" do
-    it "ok" do
-      Nagios::Tresh.check({"s" => "2", "c" => "10"}).should eq({Nagios::OK, "msg 2"})
-    end
-
-    it "warn" do
-      Nagios::Tresh.check({"s" => "7", "c" => "10"}).should eq({Nagios::WARN, "msg 7"})
-    end
-
-    it "crit" do
-      Nagios::Tresh.check({"s" => "15", "c" => "10"}).should eq({Nagios::CRIT, "msg 15"})
-    end
-
-    it "crit undefined should be warn" do
-      Nagios::Tresh.check({"s" => "15"}).should eq({Nagios::WARN, "msg 15"})
+  describe "GenCheck" do
+    it "check1" do
+      k = Nagios::GenCheck1.new
+      k.check
+      p k
+      Nagios::GenCheck1.check.should eq({Nagios::WARN, "msg 15"})
     end
   end
 
   it "check_name" do
-    c = Nagios::Prefix.new
-    c.check_name.should eq("prefix")
     Nagios::Prefix.check_name.should eq("prefix")
+    Nagios::Prefix.new.check_name.should eq("prefix")
   end
 end

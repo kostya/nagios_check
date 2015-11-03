@@ -1,27 +1,5 @@
 require "./spec_helper"
 
-
-# x = SOME_METHOD
-# msg = SOME_MESSAGE_FORMATTER(x) || x.to_s
-# if x > CRIT_LIMIT
-#   crit msg
-# elsif x > WARN_LIMIT
-#   warn msg
-# else
-#   ok msg
-# end
-
-# class Nagios::Hah < Nagios::Check
-#   def balance(param)
-#   end
-
-#   def execute
-#     10.times do |param|
-#       tresholds(some_method(param), 90, 60) { |val| "balance:#{val}" }
-#     end
-#   end
-# end
-
 class Nagios::Bla < Nagios::Check
   params :s
 
@@ -56,26 +34,13 @@ class Nagios::Prefix < Nagios::Check
   end
 end
 
-class Nagios::Tresh < Nagios::Check
-  # params :s, :c
+class Nagios::GenCheck1 < Nagios::Check
+  def red(x = 10)
+    x / 10.0
+  end
+  gen_check :red
 
-  # def some_m
-  #   if ss = s
-  #     ss.to_i
-  #   else
-  #     0
-  #   end
-  # end
-
-  # def criti
-  #   if cc = c
-  #     cc.to_i
-  #   else
-  #     0
-  #   end
-  # end
-
-  # def execute
-  #   tresholds(->() { some_m }, 5, criti) { |x| "msg #{x}" }
-  # end
+  def execute
+    (0..10).each { |param| check_red(param, ok = {0.0, 0.7}, warn = {0.7, 0.9}, crit = {0.9, 1.0}) }
+  end
 end

@@ -27,7 +27,11 @@ class Nagios::Check
   end
 
   def result
-    errors = message_prefix + (@crit + @warn + @other).join("; ")
+    errors = [] of String
+    errors << @crit.join("; ") if @crit.any?
+    errors << @warn.join("; ") if @warn.any?
+    errors << @other.join("; ") if @other.any?
+    errors = message_prefix + errors.join(" \\ ")
 
     res = if @crit.any?
             {Nagios::CRIT, errors}
@@ -93,20 +97,53 @@ class Nagios::Check
     {% end %}
   end
 
-  def tresholds(method : ->, w, e, &block)
-    res = method.call()
-    msg = "#{res}" #block.call(res) || res.inspect
+  macro gen_check(*methods)
+    {% for method in methods %}
+      def check_{{ method.id }}(arg = nil, ok = nil, warn = nil, crit = nil)
+        res = {{ method.id }}(arg)
+        msg = "{{ method.id }}" + (arg ? "(#{arg})" : "") + ":#{res}"
 
-    if e && res >= e
-      crit msg
-    elsif w && res >= w
-      warn msg
-    else
-      ok msg
-    end
+        ok msg
+
+        if crit.is_a?(Tuple)
+          left, right = crit
+          if res > left && res <= right
+            crit msg
+            return
+          end
+        elsif !crit.nil?
+          if res == crit
+            crit msg
+            return
+          end          
+        end
+
+        if warn.is_a?(Tuple)
+          left, right = warn
+          if res > left && res <= right
+            warn msg
+            return
+          end
+        elsif !warn.nil?
+          if res == warn
+            warn msg
+            return
+          end
+        end
+
+        if ok.is_a?(Tuple)
+          left, right = ok
+          if res < left || res > right
+            other msg
+            return
+          end
+        elsif !ok.nil?
+          if res != ok
+            other msg
+            return
+          end
+        end        
+      end
+    {% end %}
   end
-
-  # def tresholds(method, w, e)
-  #   thresholds(method, w, e) { nil }
-  # end
 end
