@@ -34,5 +34,21 @@ class Nagios::Blah < Nagios::Check
 end
 
 status, message = Nagios::Check.run("blah")
+```
 
+## GenCheck
+
+
+```crystal
+class Nagios::Blah < Nagios::Check
+  def some_measure(arg)
+    rand + arg
+  end
+
+  gen_check :some_measure
+
+  def execute
+    check_some_measure 0, ok: {0, 0.5}, warn: {0.5, 0.7}, crit: {0.7, 1.0}
+  end
+end
 ```
