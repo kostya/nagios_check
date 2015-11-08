@@ -36,23 +36,6 @@ end
 status, message = Nagios::Check.run("blah")
 ```
 
-## GenCheck
-
-
-```crystal
-class Nagios::Blah < Nagios::Check
-  def some_measure(arg)
-    rand + arg
-  end
-
-  gen_check :some_measure
-
-  def execute
-    check_some_measure 0, ok: {0, 0.5}, warn: {0.5, 0.7}, crit: {0.7, 1.0}
-  end
-end
-```
-
 ## FastCheck
 
 
@@ -63,7 +46,11 @@ class Nagios::Blah < Nagios::Check
   end
 
   def execute
+    # method check(name, value, limits)
     check "some_measure(0)", some_measure(0), ok: {0, 0.5}, warn: {0.5, 0.7}, crit: {0.7, 1.0}
+
+    # macro chk(expression, limits)
+    chk some_measure(1), ok: {0, 0.5}, warn: {0.5, 0.7}, crit: {0.7, 1.0}
   end
 end
 ```
