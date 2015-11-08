@@ -34,53 +34,6 @@ class Nagios::Prefix < Nagios::Check
   end
 end
 
-class Nagios::GenCheck1 < Nagios::Check
-  params :dir, :to
-
-  def red(x = 10)
-    x / 10.0
-  end
-
-  gen_check :red
-
-  def execute
-    upto = (to || 10).to_i
-    if dir == "right"
-      (0..upto).each { |param| check_red(param, ok: {0.9, 1.0}, warn: {0.3, 0.9}, crit: {0.0, 0.3}) }
-    else
-      (0..upto).each { |param| check_red(param, ok: {0.0, 0.7}, warn: {0.7, 0.9}, crit: {0.9, 1.0}) }
-    end
-  end
-end
-
-class Nagios::GenCheck2 < Nagios::Check
-  params :r
-
-  def red(x)
-    (r || 0.1).to_f
-  end
-
-  gen_check :red
-
-  def execute
-    check_red ok: 0.1, warn: 0.2, crit: 0.3
-  end
-end
-
-class Nagios::GenCheck3 < Nagios::Check
-  params :r
-
-  def red(x)
-    r ? true : false
-  end
-
-  gen_check :red
-
-  def execute
-    check_red ok: true, crit: false
-  end
-end
-
 class Nagios::FastCheck1 < Nagios::Check
   params :dir, :to
 
@@ -91,10 +44,22 @@ class Nagios::FastCheck1 < Nagios::Check
   def execute
     upto = (to || 10).to_i
     if dir == "right"
-      (0..upto).each { |param| check("red(#{param})", red(param), ok: {0.9, 1.0}, warn: {0.3, 0.9}, crit: {0.0, 0.3}) }
+      (0..upto).each { |param| check(red(param), ok: {0.9, 1.0}, warn: {0.3, 0.9}, crit: {0.0, 0.3}) }
     else
-      (0..upto).each { |param| check("red(#{param})", red(param), ok: {0.0, 0.7}, warn: {0.7, 0.9}, crit: {0.9, 1.0}) }
+      (0..upto).each { |param| check(red(param), ok: {0.0, 0.7}, warn: {0.7, 0.9}, crit: {0.9, 1.0}) }
     end
+  end
+end
+
+class Nagios::FastCheck2 < Nagios::Check
+  params :r
+
+  def red
+    (r || 0.1).to_f
+  end
+
+  def execute
+    check red, ok: 0.1, warn: 0.2, crit: 0.3
   end
 end
 
@@ -106,7 +71,7 @@ class Nagios::FastCheck3 < Nagios::Check
   end
 
   def execute
-    check "red", red, ok: true, crit: false
+    check red, ok: true, crit: false
   end
 end
 
@@ -118,7 +83,7 @@ class Nagios::FastCheckArray < Nagios::Check
   end
 
   def execute
-    check "red", red, ok: [1, 5, 7], crit: [8, 12, 22]
+    check red, ok: [1, 5, 7], crit: [8, 12, 22]
   end
 end
 
@@ -130,6 +95,6 @@ class Nagios::FastCheckRange < Nagios::Check
   end
 
   def execute
-    check "red", red, ok: 0..12, crit: 15..22
+    check red, ok: 0..12, crit: 15..22
   end
 end
