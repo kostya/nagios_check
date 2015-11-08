@@ -95,11 +95,11 @@ class Nagios::Check
     {% end %}
   end
 
-  macro check(code, ok = nil, warn = nil, crit = nil)
-    do_check({{ code.stringify }}, {{ code.id }}, ok, warn, crit)
+  macro chk(code, ok = nil, warn = nil, crit = nil)
+    check({{ code.stringify }}, {{ code.id }}, {{ ok.id }} , {{ warn.id }} , {{ crit.id }})
   end
 
-  def do_check(name : String, res, ok = nil, warn = nil, crit = nil)
+  def check(name : String, res, ok = nil, warn = nil, crit = nil)
     msg = name + ":#{res}"
 
     ok msg
