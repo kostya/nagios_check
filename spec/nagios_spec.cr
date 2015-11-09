@@ -93,6 +93,12 @@ describe "Nagios::Bla" do
       Nagios::FastCheckRange.check({"r" => "16"}).should eq({Nagios::CRIT, "red:16"})
       Nagios::FastCheckRange.check({"r" => "28"}).should eq({Nagios::OTHER, "red:28"})
     end
+
+    it "check_value" do
+      Nagios::FastCheckValue.check.should eq({Nagios::OK, "1"})
+      Nagios::FastCheckValue2.check.should eq({Nagios::OTHER, "jopa"})
+      Nagios::FastCheckValue3.check.should eq({Nagios::WARN, "2"})
+    end
   end
 
   it "check_name" do

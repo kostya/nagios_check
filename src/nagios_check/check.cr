@@ -95,61 +95,39 @@ class Nagios::Check
     {% end %}
   end
 
-  macro chk(code, ok = nil, warn = nil, crit = nil)
-    check({{ code.stringify }}, {{ code.id }}, {{ ok.id }} , {{ warn.id }} , {{ crit.id }})
+  macro chk(call, ok = nil, warn = nil, crit = nil)
+    {% if call.is_a?(Call) %}
+      arguments = Tuple.new({{call.args.argify}})
+      {% call = "#{call.receiver}#{".".id if call.receiver}#{call.name}" %}
+      str = "#{ {{call}} }#{"(" + arguments.map(&.inspect).join(", ") + ")" if arguments.any?}"
+      res = {{ call.id }}(*arguments)
+    {% else %}
+      str = nil
+      res = {{ call }}
+    {% end %}
+    check(str, res, {{ ok }} , {{ warn }} , {{ crit }})
   end
 
-  def check(name : String, res, ok = nil, warn = nil, crit = nil)
-    msg = name + ":#{res}"
+  def check(name : String?, res, ok = nil, warn = nil, crit = nil)
+    msg = name ? name + ":#{res}" : res.to_s
 
     ok msg
 
-    {% for chk in %w(crit warn) %}
-      if {{ chk.id }}.is_a?(Tuple)
+    {% for chk in %w(crit warn ok) %}
+      cond = if {{ chk.id }}.is_a?(Tuple)
         left, right = {{ chk.id }}
-        if res >= left && res <= right
-          {{ chk.id }} msg
-          return
-        end
+        res >= left && res <= right
       elsif {{ chk.id }}.is_a?(Array)
-        if {{ chk.id }}.includes?(res)
-          {{ chk.id }} msg
-          return
-        end
+        {{ chk.id }}.includes?(res)
       elsif {{ chk.id }}.is_a?(Range)
-        if {{ chk.id }}.includes?(res)
-          {{ chk.id }} msg
-          return
-        end
+        {{ chk.id }}.includes?(res)
       elsif !{{ chk.id }}.nil?
-        if res == {{ chk.id }}
-          {{ chk.id }} msg
-          return
-        end
+        res == {{ chk.id }}
+      end
+      if {{ "!".id if chk == "ok" }}cond
+        {{ chk == "ok" ? "other".id : chk.id }} msg
+        return
       end
     {% end %}
-
-    if ok.is_a?(Tuple)
-      left, right = ok
-      if res < left || res > right
-        other msg
-        return
-      end
-    elsif ok.is_a?(Array)
-      unless ok.includes?(res)
-        other msg
-        return
-      end
-    elsif ok.is_a?(Range)
-      unless ok.includes?(res)
-        other msg
-        return
-      end
-    elsif !ok.nil?
-      if res != ok
-        other msg
-        return
-      end
-    end
   end
 end

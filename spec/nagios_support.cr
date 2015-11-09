@@ -44,9 +44,9 @@ class Nagios::FastCheck1 < Nagios::Check
   def execute
     upto = (to || 10).to_i
     if dir == "right"
-      (0..upto).each { |param| check("red(#{param})", red(param), ok: {0.9, 1.0}, warn: {0.3, 0.9}, crit: {0.0, 0.3}) }
+      (0..upto).each { |param| chk(red(param), ok: {0.9, 1.0}, warn: {0.3, 0.9}, crit: {0.0, 0.3}) }
     else
-      (0..upto).each { |param| check("red(#{param})", red(param), ok: {0.0, 0.7}, warn: {0.7, 0.9}, crit: {0.9, 1.0}) }
+      (0..upto).each { |param| chk(red(param), ok: {0.0, 0.7}, warn: {0.7, 0.9}, crit: {0.9, 1.0}) }
     end
   end
 end
@@ -96,5 +96,24 @@ class Nagios::FastCheckRange < Nagios::Check
 
   def execute
     chk red, ok: 0..12, crit: 15..22
+  end
+end
+
+class Nagios::FastCheckValue < Nagios::Check
+  def execute
+    chk 1.0, ok: 1.0
+  end
+end
+
+class Nagios::FastCheckValue2 < Nagios::Check
+  def execute
+    chk "jopa", ok: "jpoa"
+  end
+end
+
+class Nagios::FastCheckValue3 < Nagios::Check
+  def execute
+    a = 2
+    chk a, warn: 2
   end
 end
