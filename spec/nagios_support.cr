@@ -117,3 +117,27 @@ class Nagios::FastCheckValue3 < Nagios::Check
     chk a, warn: 2
   end
 end
+
+class Nagios::LimitsCheck < Nagios::Check
+  params :r
+
+  def red
+    (r || 0.5).to_f
+  end
+
+  def execute
+    chk red, limits: {0.0, 0.6, 0.9, 1.0}
+  end
+end
+
+class Nagios::BackLimitsCheck < Nagios::Check
+  params :r
+
+  def red
+    (r || 0.5).to_f
+  end
+
+  def execute
+    chk red, limits: {1.0, 0.9, 0.6, 0.0}
+  end
+end

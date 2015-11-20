@@ -101,6 +101,22 @@ describe "Nagios::Bla" do
     end
   end
 
+  it "limit_check" do
+    Nagios::LimitsCheck.check({"r" => "-0.3"}).should eq({Nagios::OTHER, "red:-0.3"})
+    Nagios::LimitsCheck.check({"r" => "0.3"}).should eq({Nagios::OK, "red:0.3"})
+    Nagios::LimitsCheck.check({"r" => "0.7"}).should eq({Nagios::WARN, "red:0.7"})
+    Nagios::LimitsCheck.check({"r" => "0.95"}).should eq({Nagios::CRIT, "red:0.95"})
+    Nagios::LimitsCheck.check({"r" => "1.95"}).should eq({Nagios::OTHER, "red:1.95"})
+  end
+
+  it "back limit_check" do
+    Nagios::BackLimitsCheck.check({"r" => "-0.3"}).should eq({Nagios::OTHER, "red:-0.3"})
+    Nagios::BackLimitsCheck.check({"r" => "0.3"}).should eq({Nagios::CRIT, "red:0.3"})
+    Nagios::BackLimitsCheck.check({"r" => "0.7"}).should eq({Nagios::WARN, "red:0.7"})
+    Nagios::BackLimitsCheck.check({"r" => "0.95"}).should eq({Nagios::OK, "red:0.95"})
+    Nagios::BackLimitsCheck.check({"r" => "1.95"}).should eq({Nagios::OTHER, "red:1.95"})
+  end
+
   it "check_name" do
     Nagios::Prefix.check_name.should eq("prefix")
     Nagios::Prefix.new.check_name.should eq("prefix")

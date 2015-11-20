@@ -95,7 +95,7 @@ class Nagios::Check
     {% end %}
   end
 
-  macro chk(call, ok = nil, warn = nil, crit = nil)
+  macro chk(call, ok = nil, warn = nil, crit = nil, limits = nil)
     {% if call.is_a?(Call) %}
       arguments = Tuple.new({{call.args.argify}})
       {% call = "#{call.receiver}#{".".id if call.receiver}#{call.name}" %}
@@ -105,13 +105,28 @@ class Nagios::Check
       str = nil
       res = {{ call }}
     {% end %}
-    check(str, res, {{ ok }} , {{ warn }} , {{ crit }})
+    check(str, res, {{ ok }}, {{ warn }}, {{ crit }}, {{ limits }})
   end
 
-  def check(name : String?, res, ok = nil, warn = nil, crit = nil)
+  def check(name : String?, res, ok = nil, warn = nil, crit = nil, limits = nil)
     msg = name ? name + ":#{res}" : res.to_s
 
     ok msg
+
+    if limits && limits.is_a?(Tuple) && limits.size == 4
+      a1, a2, a3, a4 = limits
+      if a1 < a2 < a3 < a4
+        ok = {a1, a2}
+        warn = {a2, a3}
+        crit = {a3, a4}
+      elsif a1 > a2 > a3 > a4
+        ok = {a2, a1}
+        warn = {a3, a2}
+        crit = {a4, a3}
+      else
+        raise "parameters should be ordered <#{a1}, #{a2}, #{a3}, #{a4}>"
+      end
+    end
 
     {% for chk in %w(crit warn ok) %}
       cond = if {{ chk.id }}.is_a?(Tuple)
