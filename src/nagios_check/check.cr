@@ -9,6 +9,9 @@ class Nagios::Check
     end
   end
 
+  @started_at : Time
+  @check_name : String
+
   def initialize(@params = {} of String => String)
     @started_at = Time.now
     @check_name = self.class.check_name
