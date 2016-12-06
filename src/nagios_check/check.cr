@@ -100,7 +100,7 @@ class Nagios::Check
 
   macro chk(call, ok = nil, warn = nil, crit = nil, limits = nil)
     {% if call.is_a?(Call) %}
-      arguments = Tuple.new({{call.args.argify}})
+      arguments = Tuple.new({{call.args.splat}})
       {% call = "#{call.receiver}#{".".id if call.receiver}#{call.name}" %}
       str = "#{ {{call}} }#{"(" + arguments.map(&.inspect).join(", ") + ")" if arguments.any?}"
       res = {{ call.id }}(*arguments)
