@@ -1,7 +1,7 @@
 require "./nagios_check/*"
 
 module Nagios
-  VERSION = "0.1.0"
+  VERSION = "0.1"
 
   OK    = 0
   WARN  = 1
