@@ -25,7 +25,7 @@ class Nagios::Check
     self.name.underscore.split("::").last
   end
 
-  macro def self.subclasses
+  def self.subclasses
     {{ @type.subclasses }}
   end
 
