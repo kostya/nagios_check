@@ -29,11 +29,16 @@ class Nagios::Check
     {{ @type.subclasses }}
   end
 
+  def always_output_ok?
+    false
+  end
+
   def result
     errors = [] of String
     errors << @crit.join("; ") if @crit.any?
     errors << @warn.join("; ") if @warn.any?
     errors << @other.join("; ") if @other.any?
+    errors << @ok.join("; ") if @ok.any? && always_output_ok?
     errors = message_prefix + errors.join(" \\ ")
 
     if @crit.any?

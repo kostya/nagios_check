@@ -12,6 +12,22 @@ class Nagios::Bla < Nagios::Check
   end
 end
 
+class Nagios::BlaOutputOk < Nagios::Check
+  params :s
+
+  def always_output_ok?
+    true
+  end
+
+  def execute
+    crit "a1" if s == "crit" || s == "crit_warn"
+    warn "a2" if s == "warn" || s == "crit_warn"
+    raise "a3" if s == "raise"
+    other "a4" if s == "other"
+    ok "a5"
+  end
+end
+
 # block parameter
 class Nagios::BlockObj < Nagios::Check
   params :s

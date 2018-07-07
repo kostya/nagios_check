@@ -32,6 +32,16 @@ describe "Nagios::Bla" do
     end
   end
 
+  describe "BlaOutputOk" do
+    it "ok run" do
+      Nagios::BlaOutputOk.check.should eq({Nagios::OK, "a5"})
+    end
+
+    it "crit" do
+      Nagios::BlaOutputOk.check({"s" => "crit"}).should eq({Nagios::CRIT, "a1 \\ a5"})
+    end
+  end
+
   describe "runner" do
     it "ok run throught lookup" do
       Nagios::Check.run("bla").should eq({Nagios::OK, "a5"})
