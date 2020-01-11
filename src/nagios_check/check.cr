@@ -13,7 +13,7 @@ class Nagios::Check
   @check_name : String
 
   def initialize(@params = {} of String => String)
-    @started_at = Time.now
+    @started_at = Time.local
     @check_name = self.class.check_name
     @ok = [] of String
     @crit = [] of String
